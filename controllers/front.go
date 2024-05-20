@@ -1,17 +1,24 @@
 package controllers
 
-import "net/http"
+import (
+	"encoding/json"
+	"io"
+	"net/http"
+)
 
 func RegisterController() {
 	uc := newUserController()
 
-	// Wrap userController's ServeHttp method with handlerfunc instead of
-	/*
-		http.Handle("/users", *c)
-		http.Handle("/users/", *c)
-	*/
+	// http.Handle("/users", *uc)
+	// http.Handle("/users/", *uc)
+
 	handler := http.HandlerFunc(uc.ServeHttp)
 
 	http.Handle("/users", handler)
 	http.Handle("/users/", handler)
+}
+
+func encodeResponseAsJSON(data interface{}, w io.Writer) {
+	enc := json.NewEncoder(w)
+	enc.Encode(data)
 }
